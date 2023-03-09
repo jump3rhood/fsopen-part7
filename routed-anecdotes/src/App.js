@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Link,
   Routes,
   Route,
-  useMatch
+  useMatch,
+  useNavigate
 } from 'react-router-dom'
 
 const Menu = () => {
@@ -19,10 +20,12 @@ const Menu = () => {
   )
 }
 const Anecdote = ({anecdote}) => {
+  console.log(anecdote)
   return (
     <div>
       <h1>{anecdote.content}</h1>
       <p>has {anecdote.votes} votes</p>
+      <p>for more info see <a href={anecdote.info}>{anecdote.info}</a></p>
     </div>
   )
 }
@@ -65,7 +68,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
-
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -75,6 +78,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    // redirect to /
+    navigate('/')
   }
 
   return (
@@ -101,6 +106,7 @@ const CreateNew = (props) => {
 }
 
 const App = () => {
+  
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -117,16 +123,28 @@ const App = () => {
       id: 2
     }
   ])
+  const [notification, setNotification] = useState('')
   const match = useMatch('/anecdotes/:id')
   const anecdote = match 
     ? anecdotes.find(anecdote => anecdote.id === Number(match.params.id))
     : null
 
-  const [notification, setNotification] = useState('')
+  useEffect( ()=> {
+    // console.log('notification set')
+    let timer
+    if(notification){
+      timer = setTimeout(() => {
+        setNotification('')
+        // console.log('reset notification')
+      }, 5000)
+    }
+    return () => clearInterval(timer)
+  }, [notification])
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`a new anecdote ${anecdote.content} created`)
   }
 
   const anecdoteById = (id) =>
@@ -147,6 +165,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification ? <p>{notification}</p> : null}
       <Routes>
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path='/about' element={<About />} />
