@@ -1,0 +1,55 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "custom hooks are awesome"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "Is this working?",
+      "id": 3
+    },
+    {
+      "content": "JS is awesome",
+      "id": 4
+    },
+    {
+      "content": "CSS is long-suffering",
+      "id": 5
+    },
+    {
+      "content": "Where is the pancha kattu <#",
+      "id": 6
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "Matti Luukkainen",
+      "number": "040-12344565"
+    },
+    {
+      "id": 2,
+      "name": "Tarja Halonen",
+      "number": "040-2223334"
+    },
+    {
+      "name": "John",
+      "number": "090-12343235",
+      "id": 3
+    },
+    {
+      "name": "Vilas",
+      "number": "090-12343235",
+      "id": 4
+    },
+    {
+      "name": "Mahesh",
+      "number": "040-9823823",
+      "id": 5
+    }
+  ]
+}
