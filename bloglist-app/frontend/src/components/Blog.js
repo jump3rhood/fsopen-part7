@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
+import { useDispatch } from 'react-redux'
+import { updateBlog, deleteBlog } from '../reducers/blogReducer'
+
+const Blog = ({ blog, user }) => {
+  const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
   const showWhenVisible = { display: visible ? 'none' : '' }
   const hideWhenVisible = { display: visible ? '' : 'none' }
@@ -15,7 +19,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
 
   const updateLikes = (id) => {
     const { title, author, url, likes } = blog
-    updateBlog(id, { title, author, url, likes: likes+1 })
+    dispatch(updateBlog(id, { title, author, url, likes: likes+1 }))
   }
 
   return (
@@ -33,7 +37,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
         <p>{blog.author}</p>
         {user.name !== blog.user.name
           ? ''
-          : <button onClick={() => deleteBlog(blog)}>remove</button>
+          : <button onClick={() => dispatch(deleteBlog(blog.id))}>remove</button>
         }
       </div>
     </div>

@@ -5,14 +5,13 @@ import Toggable from './components/Togglable'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import { notify, newNotification, resetNotification } from './reducers/notificationReducer'
+import { notify } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
-  // const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -38,11 +37,9 @@ const App = () => {
         username, password
       })
       if(user){
-        // save to localStorage
         window.localStorage.setItem('loggedBlogAppUser',
           JSON.stringify(user)
         )
-        console.log(user)
         setUser(user)
         dispatch(notify({
           class: 'success',
@@ -69,20 +66,9 @@ const App = () => {
     }))
   }
 
-  const addBlog = async (blogObj) => {
-    const createdBlog = await blogService.create(blogObj)
-    const updatedBlogs = blogs.concat(createdBlog)
-    // setBlogs(updatedBlogs)
-    const { title, author } = createdBlog
-    dispatch(notify({
-      class: 'success',
-      content: `a new blog ${title} by ${author} added`
-    }))
-  }
-
   const updateBlog = async (id, blogObj) => {
-    const updatedBlog = await blogService.update(id, blogObj)
-    const otherBlogs = blogs.filter(b => b.id !== id)
+    // const updatedBlog = await blogService.update(id, blogObj)
+    // const otherBlogs = blogs.filter(b => b.id !== id)
     // setBlogs([...otherBlogs, updatedBlog])
   }
 
@@ -128,10 +114,9 @@ const App = () => {
   }
 
   const blogstoRender = [...blogs]
-    // .filter( blog => blog.user.username === user.username)
     .sort((a,b) => b.likes - a.likes)
     .map( (b,index) => {
-      return <Blog key={index} user={user} blog={b} updateBlog={updateBlog} deleteBlog={deleteBlog}/>
+      return <Blog key={index} user={user} blog={b}/>
     })
 
   return (
@@ -145,7 +130,7 @@ const App = () => {
       <br/>
       <Toggable buttonLabel='Blog Form'>
         <h2>create new</h2>
-        <BlogForm createBlog={addBlog} />
+        <BlogForm/>
       </Toggable>
       <br/>
       <div>
