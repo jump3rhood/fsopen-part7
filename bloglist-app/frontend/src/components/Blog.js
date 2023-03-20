@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { updateBlog, deleteBlog } from '../reducers/blogReducer'
+import { notify } from '../reducers/notificationReducer'
 
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch()
@@ -37,7 +38,13 @@ const Blog = ({ blog, user }) => {
         <p>{blog.author}</p>
         {user.name !== blog.user.name
           ? ''
-          : <button onClick={() => dispatch(deleteBlog(blog.id))}>remove</button>
+          : <button onClick={() =>  {
+            dispatch(deleteBlog(blog.id))
+            dispatch(notify({
+              class: 'success',
+              content: `deleted ${blog.title}`
+            }))
+          } }>remove</button>
         }
       </div>
     </div>
