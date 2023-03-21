@@ -44,6 +44,9 @@ const App = () => {
     onSuccess: () => queryClient.invalidateQueries('blogs')
   })
 
+  const deleteMutation = useMutation(blogService.deleteOne, {
+    onSuccess: () => queryClient.invalidateQueries('blogs')
+  })
   const handleLogin = async (e) => {
     e.preventDefault()
     try{
@@ -115,8 +118,9 @@ const App = () => {
     const confirm = window.confirm(`Remove ${blog.title} by ${blog.author}?`)
     if(confirm){
       try{
-        await blogService.deleteOne(blog.id)
-        setBlogs(blogs.filter(b => b.id !== blog.id))
+        deleteMutation.mutate(blog.id)
+        // await blogService.deleteOne(blog.id)
+        // setBlogs(blogs.filter(b => b.id !== blog.id))
         notificationDispatch({
           type: 'SET',
           payload: {
