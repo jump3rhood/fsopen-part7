@@ -8,33 +8,32 @@ import blogService from './services/blogs'
 import noteService from './services/login'
 import NotificationContext from './components/NotificationContext'
 import notificationReducer from './components/notificationReducer'
+import userReducer from './components/userReducer'
+import UserContext from './components/UserContext'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
+  // const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  // useEffect(() => {
-  //   console.log('1st useeffect')
-  //   blogService.getAll().then(blogs => {
-  //     setBlogs(blogs)
-  //   })
-  // }, [])
+
+  // React - Query for blogs
+  const queryClient = useQueryClient()
+  const { isLoading, error, data } = useQuery('blogs', blogService.getAll)
+  const queryBlogs = data
+  // reducers
+  const [notification, notificationDispatch] = useReducer(notificationReducer, null)
+  const [user, userDispatch] = useReducer(userReducer, null)
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if(loggedUserJSON){
       const user = JSON.parse(loggedUserJSON)
       console.log(user)
-      setUser(user)
+      userDispatch({ type: 'SET', payload: user })
       blogService.setToken(user.token)
     }
   },[])
-  // React - Query for blogs
-  const queryClient = useQueryClient()
-  const { isLoading, error, data } = useQuery('blogs', blogService.getAll)
-  const queryBlogs = data
-  const [notification, notificationDispatch] = useReducer(notificationReducer, null)
 
   const addMutation = useMutation(blogService.create, {
     onSuccess: () => queryClient.invalidateQueries('blogs')
@@ -54,11 +53,10 @@ const App = () => {
         username, password
       })
       if(user){
-        // save to localStorage
         window.localStorage.setItem('loggedBlogAppUser',
           JSON.stringify(user)
         )
-        setUser(user)
+        userDispatch({ type: 'SET', payload: user })
         notificationDispatch({
           type: 'SET',
           payload: {
@@ -85,7 +83,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
-    setUser(null)
+    userDispatch({ type: 'RESET' })
     notificationDispatch({
       type: 'SET',
       payload: {
@@ -119,8 +117,6 @@ const App = () => {
     if(confirm){
       try{
         deleteMutation.mutate(blog.id)
-        // await blogService.deleteOne(blog.id)
-        // setBlogs(blogs.filter(b => b.id !== blog.id))
         notificationDispatch({
           type: 'SET',
           payload: {
@@ -161,31 +157,33 @@ const App = () => {
     )
   }
   return (
-    <NotificationContext.Provider value={[notification, notificationDispatch]}>
-      <h2>blogs</h2>
-      <Notification />
-      <div>
-        <p>{user.name} logged in</p>
-        <button onClick={handleLogout}>logout</button>
-      </div>
-      <br/>
-      <Toggable buttonLabel='Blog Form'>
-        <h2>create new</h2>
-        <BlogForm createBlog={addBlog} />
-      </Toggable>
-      <br/>
-      <div>
-        <h3>My list of blogs</h3>
-        <div id="blogs-section">
-          {isLoading
-            ? <p>Loading...</p>
-            : (error ? <p>{error.message}</p>
-              : queryBlogs
-                .sort((a,b) => b.likes - a.likes)
-                .map((b,index) => <Blog key={index} user={user} blog={b} updateBlog={updateBlog} deleteBlog={deleteBlog}/>)) }
+    <UserContext.Provider value={[ user, userDispatch]} >
+      <NotificationContext.Provider value={[notification, notificationDispatch]}>
+        <h2>blogs</h2>
+        <Notification />
+        <div>
+          <p>{user.name} logged in</p>
+          <button onClick={handleLogout}>logout</button>
         </div>
-      </div>
-    </NotificationContext.Provider>
+        <br/>
+        <Toggable buttonLabel='Blog Form'>
+          <h2>create new</h2>
+          <BlogForm createBlog={addBlog} />
+        </Toggable>
+        <br/>
+        <div>
+          <h3>My list of blogs</h3>
+          <div id="blogs-section">
+            {isLoading
+              ? <p>Loading...</p>
+              : (error ? <p>{error.message}</p>
+                : queryBlogs
+                  .sort((a,b) => b.likes - a.likes)
+                  .map((b,index) => <Blog key={index} blog={b} updateBlog={updateBlog} deleteBlog={deleteBlog}/>)) }
+          </div>
+        </div>
+      </NotificationContext.Provider>
+    </UserContext.Provider>
   )
 }
 

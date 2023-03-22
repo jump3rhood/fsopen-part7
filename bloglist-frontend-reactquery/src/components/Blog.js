@@ -1,5 +1,9 @@
-import React, { useState } from 'react'
-const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
+import React, { useState, useContext } from 'react'
+import UserContext from './UserContext'
+const Blog = ({ blog, updateBlog, deleteBlog }) => {
+  const [user, userDispatch] = useContext(UserContext)
+  console.log(user.name)
+  console.log(blog.user)
   const [visible, setVisible] = useState(false)
   const showWhenVisible = { display: visible ? 'none' : '' }
   const hideWhenVisible = { display: visible ? '' : 'none' }
