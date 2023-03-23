@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { createBlog } from '../reducers/blogReducer'
 import { notify } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
+import { Form, Button, Container, Row, Col } from 'react-bootstrap'
 
 const BlogForm = () => {
 
@@ -25,21 +26,47 @@ const BlogForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} id="blog-form">
-      <div>
-            title <input placeholder='title' id='title' value={title} onChange={ ({ target }) => setTitle(target.value)} />
-      </div>
-      <div>
-            author <input placeholder='author' id="author" value={author} onChange={ ({ target }) => setAuthor(target.value)} />
-      </div>
-      <div>
-            url <input type="url" value={url} placeholder='url' id="url" onChange={ ({ target }) => setUrl(target.value)} />
-      </div>
-      <div>
-            likes <input type="number" id="likes" value={likes} placeholder='likes' onChange={({ target }) => setLikes(target.value)} />
-      </div>
-      <button type="submit" id='create'>create</button>
-    </form>
+
+    <Container>
+      <Row className="justify-content-md-center">
+        <Col>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                name="title"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Author</Form.Label>
+              <Form.Control
+                type="text"
+                name="author"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Url</Form.Label>
+              <Form.Control
+                type="url"
+                name="url"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Likes</Form.Label>
+              <Form.Control
+                type="number"
+                name="likes"
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+          Create
+            </Button>
+          </Form>
+        </Col>
+        <Col></Col>
+      </Row>
+    </Container>
   )
 }
 

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import BlogForm from './BlogForm'
 import { Link } from 'react-router-dom'
 import Toggable from './Togglable'
-import Notification from './Notification'
 import blogService from '../services/blogs'
 import loginService from '../services/login'
 import { notify } from '../reducers/notificationReducer'
 import { initializeBlogs } from '../reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSavedUser, setAndStoreUser } from '../reducers/userReducer'
+
+import { Table, Button } from 'react-bootstrap'
 
 const Home = () => {
   const dispatch = useDispatch()
@@ -42,7 +43,7 @@ const Home = () => {
     }catch(e){
       resetLoginForm()
       dispatch(notify({
-        class: 'error',
+        class: 'dangero',
         content: 'wrong username or password'
       }))
     }
@@ -56,15 +57,14 @@ const Home = () => {
     return (
       <div>
         <h2>login to view blogs</h2>
-        <Notification />
         <form id='login-form' onSubmit={handleLogin}>
-          <div>
+          <div className='mb-2'>
           Username <input type="text" id='username' value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
           </div>
-          <div>
+          <div className='mb-2'>
           Password <input type="password" id='password' value={password} name="Password" onChange={({ target }) => setPassword(target.value)}/>
           </div>
-          <button type="submit" id='login-button'>login</button>
+          <Button variant='primary' type="submit" id='login-button'>login</Button>
         </form>
       </div>
     )
@@ -72,25 +72,20 @@ const Home = () => {
   if(blogs.length === 0){
     return <h1>loading</h1>
   }
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
+
+  const linkStyle = {
+    textDecoration: 'none'
   }
 
   const blogstoRender = [...blogs]
     // .sort((a,b) => b.likes - a.likes)
     .map( (b, index) => {
-      return <div style={blogStyle} key={index}><Link to={`/blogs/${b.id}`}>{b.title}</Link></div>
+      return <tr key={index}><td><Link style={linkStyle} to={`/blogs/${b.id}`}>{b.title}</Link></td></tr>
       // return <Blog key={index} user={user} blog={b}/>
     })
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification/>
       <br/>
       <Toggable buttonLabel='Blog Form'>
         <h2>create new</h2>
@@ -100,7 +95,11 @@ const Home = () => {
       <div>
         <h3>My list of blogs</h3>
         <div id="blogs-section">
-          { blogstoRender }
+          <Table striped>
+            <tbody>
+              { blogstoRender }
+            </tbody>
+          </Table>
         </div>
       </div>
     </div>

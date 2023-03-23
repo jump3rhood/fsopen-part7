@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-dupe-else-if
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Button } from 'react-bootstrap'
 const Togglable = (props) => {
   const [visible, setVisible] = useState(false)
 
@@ -13,11 +14,11 @@ const Togglable = (props) => {
   return (
     <div>
       <div style={hideBtnWhenVisible} >
-        <button onClick={toggleVisibility} id="btn-label">{props.buttonLabel}</button>
+        <Button variant='secondary' onClick={toggleVisibility} id="btn-label">{props.buttonLabel}</Button>
       </div>
       <div style={showFormWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility}>cancel</button>
+        <Button variant='secondary' className='my-2' onClick={toggleVisibility}>Cancel</Button>
       </div>
     </div>
   )
