@@ -40,4 +40,10 @@ const deleteOne = async (id) => {
   return response.data
 }
 
-export default { getAll, create, update, deleteOne, setToken }
+const addComment = async (id, object) => {
+  console.log(object)
+  const response = await axios.post(`${baseUrl}/${id}/comments`, object)
+  console.log(response.data)
+  return response.data
+}
+export default { getAll, create, update, deleteOne, setToken, addComment }
