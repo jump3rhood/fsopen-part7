@@ -5,7 +5,6 @@ import { notify } from '../reducers/notificationReducer'
 
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch()
-
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -35,6 +34,8 @@ const Blog = ({ blog, user }) => {
           }))
         } }>remove</button>
       }
+      <h3>Comments</h3>
+      {blog.comments.length === 0 ? <em>No comments yet</em> : blog.comments.map((comment,i) => <li key={i}>{comment}</li>)}
     </div>
   )
 }

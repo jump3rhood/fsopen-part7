@@ -62,8 +62,8 @@ const App = () => {
       <h1>Blogs</h1>
     </div>
     <Routes>
-      <Route path="/blogs/:id" element={<Blog user={user} blog={blog}/>} />
-      <Route path="/users/:id" element={<User user={matchedUser}/>}/>
+      <Route path="/blogs/:id" element={blog ? <Blog user={user} blog={blog}/> : <Navigate replace to="/" />} />
+      <Route path="/users/:id" element={ user ? <User user={matchedUser}/> : <Navigate replace to="/" />}/>
       <Route path="/users" element={ user ? <Users users={ users }/> : <Navigate replace to="/" />} />
       <Route path="/" element={ <Home />} />
     </Routes>
