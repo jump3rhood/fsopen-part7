@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import BlogForm from './BlogForm'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 import Toggable from './Togglable'
 import Notification from './Notification'
 import blogService from '../services/blogs'
@@ -72,11 +72,19 @@ const Home = () => {
   if(blogs.length === 0){
     return <h1>loading</h1>
   }
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
 
   const blogstoRender = [...blogs]
-    .sort((a,b) => b.likes - a.likes)
-    .map( (b,index) => {
-      return <Blog key={index} user={user} blog={b}/>
+    // .sort((a,b) => b.likes - a.likes)
+    .map( (b, index) => {
+      return <div style={blogStyle} key={index}><Link to={`/blogs/${b.id}`}>{b.title}</Link></div>
+      // return <Blog key={index} user={user} blog={b}/>
     })
 
   return (
