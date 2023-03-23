@@ -8,7 +8,7 @@ import loginService from '../services/login'
 import { notify } from '../reducers/notificationReducer'
 import { initializeBlogs } from '../reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSavedUser, resetAndRemoveUser, setAndStoreUser } from '../reducers/userReducer'
+import { setSavedUser, setAndStoreUser } from '../reducers/userReducer'
 
 const Home = () => {
   const dispatch = useDispatch()
@@ -37,8 +37,8 @@ const Home = () => {
       dispatch(setAndStoreUser(userData))
       if(user){
         blogService.setToken(user.token)
-        resetLoginForm()
       }
+      resetLoginForm()
     }catch(e){
       resetLoginForm()
       dispatch(notify({
@@ -47,17 +47,8 @@ const Home = () => {
       }))
     }
   }
-  const resetLoginForm = () => {
-    setUsername('')
-    setPassword('')
-  }
 
-  const handleLogout = () => {
-    dispatch(resetAndRemoveUser())
-    dispatch(notify({
-      class: 'success',
-      content: 'successfully logged out'
-    }))
+  const resetLoginForm = () => {
     setUsername('')
     setPassword('')
   }
@@ -92,10 +83,6 @@ const Home = () => {
     <div>
       <h2>blogs</h2>
       <Notification/>
-      <div>
-        <p>{user.name} logged in</p>
-        <button onClick={handleLogout}>logout</button>
-      </div>
       <br/>
       <Toggable buttonLabel='Blog Form'>
         <h2>create new</h2>
